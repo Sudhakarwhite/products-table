@@ -1,6 +1,8 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
-// import { Product } from './Redux/Product/initalstate'; // Adjust based on your Product type
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import PersonIcon from '@mui/icons-material/Person'; // Import an icon for the reviewer's name
 
 export interface Product {
   category: string;
@@ -16,6 +18,7 @@ export interface Product {
     reviewerEmail: string;
   }[];
 }
+
 interface ReviewsModalProps {
   open: boolean;
   onClose: () => void;
@@ -24,6 +27,26 @@ interface ReviewsModalProps {
 
 const ReviewsModal: React.FC<ReviewsModalProps> = ({ open, onClose, product }) => {
   if (!product) return null;
+
+  const renderStars = (rating: number) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 !== 0;
+    const totalStars = 5;
+
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {[...Array(totalStars)].map((_, index) => {
+          if (index < fullStars) {
+            return <StarIcon key={index} sx={{ color: '#f39c12' }} />;
+          } else if (index === fullStars && halfStar) {
+            return <StarIcon key={index} sx={{ color: '#f39c12', opacity: 0.5 }} />;
+          } else {
+            return <StarBorderIcon key={index} sx={{ color: '#f39c12' }} />;
+          }
+        })}
+      </Box>
+    );
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
@@ -46,15 +69,21 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ open, onClose, product }) =
                   boxShadow: 6,
                 }
               }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#333', marginBottom: 1 }}>
-                  {review.reviewerName}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                  <PersonIcon sx={{ color: '#3f51b5', marginRight: 1 }} />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#333' }}>
+                    {review.reviewerName}
+                  </Typography>
+                </Box>
                 <Typography variant="body2" sx={{ color: '#555', marginBottom: 1 }}>
                   {review.comment}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#888', marginBottom: 1 }}>
-                  Rating: {review.rating}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                  {renderStars(review.rating)}
+                  <Typography variant="body2" sx={{ color: '#333', marginLeft: 1 }}>
+                    {review.rating}
+                  </Typography>
+                </Box>
                 <Typography variant="body2" sx={{ color: '#888' }}>
                   {new Date(review.date).toLocaleDateString()}
                 </Typography>

@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, Ref } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Drawer,
@@ -76,6 +76,11 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({ open, onClose }, ref
   const uniqueBrands = Array.from(
     new Set(products.products.map((product) => product.brand))
   ).filter(Boolean);
+
+  // Capitalize the first letter of a string
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   const handleFilterClick = (type: 'category' | 'brand', value: string) => {
     if (type === 'category') {
@@ -226,7 +231,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({ open, onClose }, ref
                       },
                     }}
                   >
-                    <ListItemText primary={category} />
+                    <ListItemText primary={capitalizeFirstLetter(category)} />
                   </ListItem>
                 ))}
               </List>
@@ -286,7 +291,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(({ open, onClose }, ref
                       },
                     }}
                   >
-                    <ListItemText primary={brand} />
+                    <ListItemText primary={capitalizeFirstLetter(brand)} />
                   </ListItem>
                 ))}
               </List>
